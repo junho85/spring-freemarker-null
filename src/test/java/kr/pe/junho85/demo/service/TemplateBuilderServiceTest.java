@@ -1,5 +1,6 @@
 package kr.pe.junho85.demo.service;
 
+import freemarker.core.InvalidReferenceException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,6 +44,28 @@ class TemplateBuilderServiceTest {
         // Then
         then(result)
                 .isEqualTo("Hello june");
+    }
+
+    @Test
+    void test_null() {
+        // Given
+        final String templateString = "Hello ${user}";
+
+        Map<String, Object> model = new HashMap<>() {{
+            put("user", null);
+        }};
+
+        // When
+        final Throwable throwable = catchThrowable(() -> templateBuilderService.build(templateString, model));
+
+        // Then
+        then(throwable)
+                .isInstanceOf(RuntimeException.class)
+        ;
+
+        then(throwable.getCause())
+                .isInstanceOf(InvalidReferenceException.class)
+        ;
     }
 
     @Test
