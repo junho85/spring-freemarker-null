@@ -26,7 +26,20 @@ class TemplateBuilderServiceTest {
         // Then
         then(result)
                 .isEqualTo("Hello world");
+    }
 
+    @Test
+    void test2() {
+        // Given
+        final String templateString = "Hello ${user}";
+        Map<String, String> model = Map.of("user", "june");
+
+        // When
+        String result = templateBuilderService.build(templateString, model);
+
+        // Then
+        then(result)
+                .isEqualTo("Hello june");
     }
 
 }
